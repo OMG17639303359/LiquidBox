@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.LiquidBox" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@drawable/window_base</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <!-- 仅用于启动窗口（starting window）：不透明深空画面，遮住桌面、不留紫屏。
+         Activity 一创建就在 onCreate 里 setTheme 切回 Theme.LiquidBox。 -->
+    <style name="Theme.LiquidBox.Splash" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_window</item>
+        <item name="android:statusBarColor">#FF05070F</item>
+        <item name="android:navigationBarColor">#FF05070F</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

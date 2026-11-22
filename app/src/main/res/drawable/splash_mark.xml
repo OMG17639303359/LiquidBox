@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 启动窗口品牌标记：冷蓝外环 + 液态水滴，与 Compose 开屏首帧呼应。
+     系统 starting window 到 Compose 首帧之间必然存在一小段，用它填掉空屏感。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="136dp"
+    android:height="136dp"
+    android:viewportWidth="136"
+    android:viewportHeight="136">
+
+    <!-- 外环：两段半圆，避免整圆 path 在部分渲染器上闭合异常 -->
+    <path
+        android:pathData="M14,68 A54,54 0 1,1 122,68 A54,54 0 1,1 14,68"
+        android:strokeColor="#337FA8FF"
+        android:strokeWidth="1.6"
+        android:fillColor="#00000000" />
+    <!-- 上方一道青色进度弧 -->
+    <path
+        android:pathData="M22,68 A46,46 0 1,1 114,68"
+        android:strokeColor="#4D5FDCCB"
+        android:strokeWidth="2.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- 水滴 -->
+    <path
+        android:pathData="M68,40 C78,56 90,68 90,80 A22,22 0 1,1 46,80 C46,68 58,56 68,40 Z"
+        android:fillColor="#CCBFD6FF" />
+    <path
+        android:pathData="M68,40 C78,56 90,68 90,80 A22,22 0 1,1 46,80 C46,68 58,56 68,40 Z"
+        android:strokeColor="#80FFFFFF"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000" />
+    <!-- 左上高光 -->
+    <path
+        android:pathData="M60,60 C56,66 54,72 54,78 A14,14 0 0,0 60,91 C56,84 58,70 60,60 Z"
+        android:fillColor="#66FFFFFF" />
+</vector>

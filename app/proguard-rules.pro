@@ -1,0 +1,5 @@
+-keep class com.liquidbox.app.** { *; }
+-keep class rikka.shizuku.** { *; }
+-keep class moe.shizuku.** { *; }
+-dontwarn org.jetbrains.compose.**
+-dontwarn androidx.compose.**

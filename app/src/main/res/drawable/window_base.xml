@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Activity 窗口底色：纯深空渐变，玻璃界面任何透明区域都不会透出紫色。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="315"
+        android:startColor="#FF05070F"
+        android:centerColor="#FF0A1226"
+        android:endColor="#FF05080F"
+        android:type="linear" />
+</shape>

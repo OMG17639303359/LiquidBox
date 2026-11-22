@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 冷启动窗口：点开图标的第一帧。深空蓝黑 + 柔和冷光，不用紫色，避免整屏发紫。 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="315"
+                android:startColor="#FF05070F"
+                android:centerColor="#FF0C1730"
+                android:endColor="#FF05080F"
+                android:type="linear" />
+        </shape>
+    </item>
+    <!-- 左上冷蓝光斑 -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:centerX="0.20"
+                android:centerY="0.18"
+                android:gradientRadius="640dp"
+                android:startColor="#334E82FF"
+                android:endColor="#004E82FF" />
+        </shape>
+    </item>
+    <!-- 右下青色光斑 -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:centerX="0.86"
+                android:centerY="0.82"
+                android:gradientRadius="580dp"
+                android:startColor="#2027D3C2"
+                android:endColor="#0027D3C2" />
+        </shape>
+    </item>
+    <!-- 顶部一道极淡的冷色高光 -->
+    <item android:gravity="top" android:height="2dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="0"
+                android:startColor="#00FFFFFF"
+                android:centerColor="#1FA9C4FF"
+                android:endColor="#00FFFFFF"
+                android:type="linear" />
+        </shape>
+    </item>
+    <!-- 居中品牌标记：系统启动窗口这一瞬间也有内容，不会是一整屏空渐变 -->
+    <item
+        android:width="136dp"
+        android:height="136dp"
+        android:gravity="center"
+        android:drawable="@drawable/splash_mark" />
+</layer-list>

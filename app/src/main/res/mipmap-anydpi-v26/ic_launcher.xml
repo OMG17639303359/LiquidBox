@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 蓝紫渐变 + 白色水滴：渐变铺满 108dp 画布，前景落在安全区内，
+     由启动器裁成圆形 / 圆角方形；monochrome 供 Android 13+ 主题图标使用。 -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
+</adaptive-icon>

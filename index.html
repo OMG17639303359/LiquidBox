@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070f">
+<meta name="description" content="LiquidBox 1.0beta 首发 · 基于 Shizuku 的全液态玻璃 Android 工具箱">
+<title>LiquidBox 1.0beta · 首发</title>
+<style>
+:root{--ink:#eef2ff;--mut:#9aa7cf;--fnt:#6d7aa8;--a:#6e9bff;--b:#a78bfa;--c:#39d3c2;--ln:rgba(255,255,255,.10);--mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+a{color:inherit;text-decoration:none}
+html{scroll-behavior:smooth}
+body{min-height:100vh;color:var(--ink);background:#05070f;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+ font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+ background-image:radial-gradient(900px 620px at 12% -6%,rgba(88,110,255,.26),transparent 62%),radial-gradient(760px 560px at 92% 8%,rgba(167,139,250,.20),transparent 60%),radial-gradient(700px 600px at 68% 92%,rgba(57,211,194,.12),transparent 62%),linear-gradient(180deg,#070b1a,#05070f 55%,#080a18);background-attachment:fixed}
+.orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;animation:drift 28s ease-in-out infinite alternate}
+.o1{width:420px;height:420px;left:-8%;top:6%;background:#4f6dff}
+.o2{width:360px;height:360px;right:-6%;top:22%;background:#a06bf5;animation-duration:34s;animation-delay:-8s}
+.o3{width:320px;height:320px;left:46%;bottom:-12%;background:#2fc9b6;opacity:.18;animation-duration:38s;animation-delay:-14s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,-50px) scale(1.14)}}
+.gridbg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(180deg,#000,transparent 78%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 78%)}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 24px;padding:0 max(24px,env(safe-area-inset-right)) 0 max(24px,env(safe-area-inset-left))}
+nav{position:relative;z-index:2;max-width:1080px;margin:0 auto;padding:22px 24px;padding:22px max(24px,env(safe-area-inset-right)) 22px max(24px,env(safe-area-inset-left));display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;border-bottom:1px solid var(--ln)}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:16px;letter-spacing:-.2px}
+.brand svg{width:30px;height:30px;filter:drop-shadow(0 4px 12px rgba(110,155,255,.5))}
+.brand i{font-style:normal;color:var(--a)}
+.sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:7px;font:600 11px/1 var(--mono);letter-spacing:.09em;color:#cdd8ff;background:rgba(110,155,255,.10);border:1px solid rgba(140,175,255,.28);padding:8px 12px;border-radius:99px;white-space:nowrap;flex:0 0 auto}
+.live{width:6px;height:6px;border-radius:50%;background:#6ce2a8;animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(108,226,168,.55)}70%{box-shadow:0 0 0 8px rgba(108,226,168,0)}100%{box-shadow:0 0 0 0 rgba(108,226,168,0)}}
+.navlink{font-size:13px;color:var(--mut);border-bottom:1px solid transparent;transition:.2s}
+.navlink:hover{color:var(--ink);border-color:var(--a)}
+.hero{display:grid;grid-template-columns:1.08fr .92fr;gap:36px;align-items:center;padding:74px 0 54px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font:600 11px/1 var(--mono);letter-spacing:.16em;color:#bcd0ff;text-transform:uppercase;margin-bottom:24px}
+.eyebrow::before{content:"";width:26px;height:1px;background:linear-gradient(90deg,var(--a),transparent)}
+h1{font-size:clamp(42px,6vw,68px);line-height:1.06;letter-spacing:-.045em;font-weight:750}
+.grad{background:linear-gradient(100deg,#8fb4ff,#b79bff 42%,#7de3d2);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{margin-top:22px;font-size:17px;line-height:1.85;color:var(--mut);max-width:520px}
+.lead b{color:#dbe4ff;font-weight:600}
+.cta{position:relative;isolation:isolate;display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+/* 按钮背后缓慢流动的彩色光带：给实时折射提供可折的内容，本身很淡 */
+.cta .glow{position:absolute;z-index:0;left:-46px;right:-46px;top:-34px;bottom:-34px;pointer-events:none;
+ background:radial-gradient(190px 96px at 14% 42%,rgba(110,155,255,.60),transparent 72%),radial-gradient(190px 96px at 62% 60%,rgba(167,139,250,.48),transparent 72%),radial-gradient(170px 96px at 100% 28%,rgba(57,211,194,.36),transparent 72%);
+ filter:blur(20px);animation:ctaDrift 13s ease-in-out infinite alternate}
+@keyframes ctaDrift{from{transform:translate3d(-20px,0,0)}to{transform:translate3d(30px,6px,0)}}
+/* 液态玻璃按钮：逐帧采样背面 -> SVG 位移贴图折射 -> 实时模糊；按压弹簧 + 边缘高光 */
+.btn{--press:0;z-index:1;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border:0;border-radius:999px;background:none;font-size:15px;font-weight:650;color:#fff;white-space:nowrap;cursor:pointer;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;will-change:transform}
+.btn svg{width:17px;height:17px;flex:none}
+.btn .glass{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:var(--surface,rgba(255,255,255,.14));-webkit-backdrop-filter:blur(2px) saturate(1.5);backdrop-filter:blur(2px) saturate(1.5);box-shadow:0 10px 30px rgba(0,0,0,.28),inset 0 0 0 .5px rgba(255,255,255,.28)}
+.btn .glass::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:.5px;background:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.5));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.btn .glass::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(80px 60px at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.35),rgba(255,255,255,0) 70%);opacity:var(--press)}
+.btn .label{position:relative;display:inline-flex;align-items:center;gap:10px}
+.btn:focus-visible{outline:2px solid #8fb4ff;outline-offset:3px}
+.primary{--surface:linear-gradient(120deg,rgba(91,130,255,.58),rgba(160,107,245,.52));color:#fff}
+.ghost{--surface:rgba(255,255,255,.10);color:#dbe4ff}
+.meta{margin-top:18px;font:12px/1.8 var(--mono);color:var(--fnt)}
+.meta span{color:#9fb2e8}
+.visual{display:flex;justify-content:center;position:relative}
+.visual::before{content:"";position:absolute;width:78%;height:70%;border-radius:50%;background:radial-gradient(circle,rgba(105,125,255,.34),transparent 66%);filter:blur(46px)}
+.phone{position:relative;z-index:1;width:min(300px,80%);filter:drop-shadow(0 34px 60px rgba(0,0,0,.62));animation:float 7s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ln);border-radius:20px;overflow:hidden;background:rgba(255,255,255,.028);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.stat{padding:24px 22px;border-right:1px solid var(--ln)}
+.stat:last-child{border-right:none}
+.stat .n{font:700 27px/1 var(--mono);letter-spacing:-.04em;background:linear-gradient(120deg,#cfe0ff,#a9b8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .l{margin-top:9px;font-size:12px;color:var(--fnt)}
+section{padding-top:88px}
+.kicker{font:600 11px/1 var(--mono);letter-spacing:.18em;color:var(--a);text-transform:uppercase}
+h2{margin-top:14px;font-size:clamp(25px,3.4vw,34px);letter-spacing:-.03em;font-weight:700}
+.sec-sub{margin-top:12px;color:var(--mut);font-size:14.5px;line-height:1.85;max-width:680px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:14px;margin-top:30px}
+.card{position:relative;padding:24px;border:1px solid var(--ln);border-radius:20px;background:linear-gradient(160deg,rgba(255,255,255,.065),rgba(255,255,255,.022));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 18px 44px rgba(0,0,0,.26);transition:transform .25s,border-color .25s;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:14%;right:14%;height:1px;background:linear-gradient(90deg,transparent,rgba(180,205,255,.6),transparent)}
+.card:hover{transform:translateY(-5px);border-color:rgba(150,180,255,.38)}
+.ico{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;color:#cfe0ff;background:linear-gradient(140deg,rgba(110,155,255,.24),rgba(167,139,250,.14));border:1px solid rgba(150,180,255,.28);margin-bottom:18px}
+.ico svg{width:21px;height:21px}
+.card h3{font-size:16px;font-weight:650}
+.card p{margin-top:9px;font-size:13px;line-height:1.8;color:var(--mut)}
+.cap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:30px}
+.cap{padding:20px 22px;border:1px solid var(--ln);border-radius:16px;background:rgba(255,255,255,.03)}
+.cap b{display:block;font-size:13.5px;color:#dbe4ff;margin-bottom:8px}
+.cap span{font-size:12.5px;line-height:1.8;color:var(--mut)}
+.spec{margin-top:30px;border:1px solid var(--ln);border-radius:20px;overflow:hidden;background:rgba(255,255,255,.028)}
+.spec table{width:100%;border-collapse:collapse;font-size:13.5px}
+.spec td{padding:15px 20px;border-bottom:1px solid var(--ln);vertical-align:top}
+.spec tr:last-child td{border-bottom:none}
+.spec td:first-child{width:150px;color:var(--fnt)}
+code{font:12.5px/1.6 var(--mono);color:#cfe0ff;background:rgba(0,0,0,.32);padding:2px 7px;border-radius:6px;word-break:break-all}
+.sha{font:11.5px/1.7 var(--mono);color:#9fb2e8;word-break:break-all}
+.notice{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}
+.note{padding:24px;border:1px solid var(--ln);border-radius:18px;background:rgba(255,255,255,.03)}
+.note.warn{border-color:rgba(255,178,122,.30);background:rgba(255,178,122,.055)}
+.note h3{font-size:14.5px;margin-bottom:12px}
+.note ul{padding-left:18px}
+.note li{font-size:12.8px;line-height:1.9;color:var(--mut)}
+footer{margin-top:96px;padding:34px 0 48px;border-top:1px solid var(--ln);display:flex;flex-wrap:wrap;gap:12px;align-items:center;color:var(--fnt);font-size:12px}
+footer b{color:#b9c6f0;font-weight:600}
+.rise{opacity:0;transform:translateY(18px);animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+@keyframes rise{to{opacity:1;transform:none}}
+@media(max-width:1000px){.navlink{display:none}}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding:52px 0 40px;gap:44px}.visual{order:-1}.phone{width:min(230px,62%)}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:none}.stat:nth-child(-n+2){border-bottom:1px solid var(--ln)}.notice{grid-template-columns:1fr}}
+@media(max-width:560px){.wrap,nav{padding-left:16px;padding-right:16px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}h1{font-size:40px}.lead{font-size:15px}.btn{width:100%}.pill{font-size:10px}.navlink{display:none}.spec td:first-child{width:110px}.spec td{padding:13px 14px}section{padding-top:64px}}
+@media(max-width:430px){nav{row-gap:10px}.sp{flex-basis:100%;height:0}.pill{margin:0 auto}}
+@media(max-width:360px){.pill{font-size:9px;padding:7px 10px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rise{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div class="gridbg"></div>
+
+<nav>
+  <div class="brand">
+    <svg viewBox="0 0 40 40" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8fb4ff"/><stop offset=".55" stop-color="#a78bfa"/><stop offset="1" stop-color="#7de3d2"/></linearGradient></defs><path d="M20 3C14 12 7 17 7 25a13 13 0 0 0 26 0c0-8-7-13-13-22Z" fill="url(#lg)" opacity=".9"/><path d="M20 3C14 12 7 17 7 25a13 13 0 0 0 26 0" stroke="rgba(255,255,255,.65)" stroke-width="1.2"/><path d="M13 24c0-5 4-8 7-12" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/></svg>
+    <span>Liquid<i>Box</i></span>
+  </div>
+  <div class="sp"></div>
+  <span class="pill"><span class="live"></span> FIRST RELEASE · 2026.11.14</span>
+  <a class="navlink" href="#download">下载</a>
+  <a class="navlink" href="#spec">规格</a>
+</nav>
+
+<main class="wrap">
+  <section class="hero" id="download">
+    <div class="rise" style="--d:.05s">
+      <div class="eyebrow">First Release · 首次发布</div>
+      <h1>把整部手机<br><span class="grad">装进液态玻璃</span></h1>
+      <p class="lead">基于 <b>Shizuku</b> 的 Android 工具箱。玻璃组件为 Kyant0 / AndroidLiquidGlass 官方 catalog 源码<b>原样引入</b>，由 Backdrop 2.0.1 驱动；支持 <b>AI 操作手机</b>，API Key 由 Android Keystore 加密，全部数据仅存本地。</p>
+      <div class="cta">
+        <i class="glow" aria-hidden="true"></i>
+        <a class="btn primary" href="https://github.com/OMG17639303359/LiquidBox/releases/download/v1.0beta/LiquidBox._1.0beta.apk">
+          <span class="glass"></span>
+          <span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>下载 1.0beta · APK</span>
+        </a>
+        <a class="btn ghost" href="https://github.com/OMG17639303359/LiquidBox/archive/refs/tags/v1.0beta.zip"><span class="glass"></span><span class="label">下载完整源码 · ZIP</span></a>
+      </div>
+      <p class="meta">versionName <span>1.0beta</span> · Android 8.0+ · 约 <span>13.3 MB</span><br>APK Signature Scheme v2 签名 · 源码以标准 ZIP 提供</p>
+    </div>
+    <div class="visual rise" style="--d:.2s">
+      <svg class="phone" viewBox="0 0 300 610" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#151d3f"/><stop offset=".55" stop-color="#231a45"/><stop offset="1" stop-color="#0d1330"/></linearGradient>
+          <linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff" stop-opacity=".20"/><stop offset="1" stop-color="#ffffff" stop-opacity=".05"/></linearGradient>
+          <linearGradient id="drop" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9fc0ff"/><stop offset="1" stop-color="#b79bff"/></linearGradient>
+          <filter id="soft"><feGaussianBlur stdDeviation="26"/></filter>
+          <clipPath id="clip"><rect x="18" y="18" width="264" height="574" rx="40"/></clipPath>
+        </defs>
+        <rect x="8" y="8" width="284" height="594" rx="50" fill="#090d1e" stroke="rgba(255,255,255,.22)" stroke-width="1.5"/>
+        <rect x="18" y="18" width="264" height="574" rx="40" fill="url(#scr)"/>
+        <g clip-path="url(#clip)">
+          <circle cx="70" cy="130" r="105" fill="#5b6bff" opacity=".62" filter="url(#soft)"/>
+          <circle cx="245" cy="265" r="95" fill="#c06bd8" opacity=".42" filter="url(#soft)"/>
+          <circle cx="110" cy="470" r="110" fill="#2fc9b6" opacity=".36" filter="url(#soft)"/>
+          <rect x="42" y="40" width="70" height="7" rx="3.5" fill="rgba(255,255,255,.55)"/>
+          <rect x="232" y="40" width="28" height="7" rx="3.5" fill="rgba(255,255,255,.35)"/>
+          <rect x="36" y="74" width="228" height="96" rx="24" fill="url(#gl)" stroke="rgba(255,255,255,.34)"/>
+          <rect x="52" y="92" width="112" height="10" rx="5" fill="rgba(255,255,255,.78)"/>
+          <rect x="52" y="112" width="168" height="7" rx="3.5" fill="rgba(255,255,255,.36)"/>
+          <rect x="52" y="128" width="132" height="7" rx="3.5" fill="rgba(255,255,255,.24)"/>
+          <rect x="52" y="148" width="60" height="8" rx="4" fill="rgba(125,227,210,.75)"/>
+          <rect x="36" y="186" width="228" height="86" rx="24" fill="url(#gl)" stroke="rgba(255,255,255,.28)"/>
+          <rect x="52" y="204" width="88" height="9" rx="4.5" fill="rgba(255,255,255,.62)"/>
+          <rect x="52" y="224" width="190" height="7" rx="3.5" fill="rgba(255,255,255,.30)"/>
+          <rect x="52" y="242" width="150" height="7" rx="3.5" fill="rgba(255,255,255,.22)"/>
+          <rect x="36" y="288" width="228" height="86" rx="24" fill="url(#gl)" stroke="rgba(255,255,255,.28)"/>
+          <rect x="52" y="306" width="104" height="9" rx="4.5" fill="rgba(255,255,255,.62)"/>
+          <rect x="52" y="330" width="196" height="8" rx="4" fill="rgba(255,255,255,.16)"/>
+          <circle cx="126" cy="334" r="9" fill="url(#drop)" stroke="rgba(255,255,255,.8)"/>
+          <rect x="36" y="390" width="228" height="72" rx="24" fill="url(#gl)" stroke="rgba(255,255,255,.28)"/>
+          <rect x="52" y="408" width="120" height="8" rx="4" fill="rgba(255,255,255,.55)"/>
+          <rect x="52" y="428" width="180" height="7" rx="3.5" fill="rgba(255,255,255,.24)"/>
+          <rect x="36" y="512" width="228" height="58" rx="29" fill="url(#gl)" stroke="rgba(255,255,255,.40)"/>
+          <rect x="42" y="518" width="52" height="46" rx="23" fill="url(#drop)" opacity=".92"/>
+          <circle cx="94" cy="541" r="4" fill="rgba(255,255,255,.7)"/>
+          <circle cx="150" cy="541" r="4" fill="rgba(255,255,255,.34)"/>
+          <circle cx="206" cy="541" r="4" fill="rgba(255,255,255,.34)"/>
+          <circle cx="246" cy="541" r="4" fill="rgba(255,255,255,.34)"/>
+        </g>
+        <rect x="18" y="18" width="264" height="574" rx="40" stroke="rgba(255,255,255,.16)" stroke-width="1"/>
+        <rect x="118" y="26" width="64" height="6" rx="3" fill="rgba(255,255,255,.20)"/>
+      </svg>
+    </div>
+  </section>
+
+  <div class="stats rise" style="--d:.3s">
+    <div class="stat"><div class="n">50+</div><div class="l">Shizuku 特权工具</div></div>
+    <div class="stat"><div class="n">4</div><div class="l">AI Provider 可选</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">后端 / 遥测</div></div>
+    <div class="stat"><div class="n">100%</div><div class="l">Key 本地加密存储</div></div>
+  </div>
+
+  <section>
+    <div class="rise"><div class="kicker">Why LiquidBox</div><h2>不是毛玻璃，是真的液态玻璃</h2>
+      <p class="sec-sub">效果链严格 <code>vibrancy() → blur(...) → lens(...)</code>，叠加边缘折射、高光与内外阴影；底栏是单一连续玻璃胶囊，液滴可拖拽滑动。玻璃组件全部来自官方 catalog 源码。</p></div>
+    <div class="cards">
+      <div class="card rise" style="--d:.05s"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M4 9c4 3 12 3 16 0M4 15c4-3 12-3 16 0"/></svg></div><h3>官方玻璃源码</h3><p>Kyant0 catalog 的 LiquidBottomTabs / Button / Toggle / Slider 及 DampedDragAnimation 原样引入，唯一玻璃库为 Backdrop 2.0.1。</p></div>
+      <div class="card rise" style="--d:.12s"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M17.5 14v7M14 17.5h7"/></svg></div><h3>自动识别软件</h3><p>自动列出已装应用（名称 + 包名），点选后包名自动带入全部软件工具，不用手填；支持搜索、仅第三方 / 全部切换。</p></div>
+      <div class="card rise" style="--d:.19s"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h18M3 16h18"/><circle cx="9" cy="8" r="3" fill="rgba(110,155,255,.3)"/><circle cx="16" cy="16" r="3" fill="rgba(167,139,250,.3)"/></svg></div><h3>软件 / 系统分区</h3><p>工具页分成软件工具与系统工具两大区；系统工具含电量修改、自定义脚本、动画速度缩放等快捷控制。</p></div>
+      <div class="card rise" style="--d:.26s"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></div><h3>AI 操作手机</h3><p>OpenAI-compatible / Anthropic / Gemini，读屏 · 点击 · 滑动 · 输入 · 启动 App · shell 工具链；每工具 Off / Ask / Auto，危险动作二次确认。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="rise"><div class="kicker">Capabilities</div><h2>全部能力</h2></div>
+    <div class="cap-grid">
+      <div class="cap"><b>应用管理</b><span>冻结/解冻/停用、隐藏、暂停、强停、清数据、系统应用卸载与恢复、组件启停、权限与 AppOps 批量配置、高级 APK 安装、强制 PiP</span></div>
+      <div class="cap"><b>系统增强</b><span>Doze 白名单、待机桶、强制 Doze、电池白名单、电量修改、无线调试降级通道</span></div>
+      <div class="cap"><b>显示与动画</b><span>强制刷新率、动画缩放、沉浸全屏、状态栏/导航栏单独隐藏、灰度、夜间模式、时钟秒、电池百分比</span></div>
+      <div class="cap"><b>网络与快捷</b><span>应用级防火墙、后台数据限制、截图/息屏/最近任务、Shell 终端与 16 条命令书签</span></div>
+      <div class="cap"><b>AI 操作手机</b><span>OpenAI / Anthropic / Gemini / DeepSeek 四种 Provider、多模态图片上传、自定义 Base URL 与 headers、读屏/点击/滑动/输入/启动 App/执行 shell 工具链、危险动作确认</span></div>
+      <div class="cap"><b>日常与本地工具</b><span>快捷开关、亮度/休眠、媒体与音量、设备信息、随手维护、录屏截图；二维码生成、ZIP 解压/打包、文件查看/添加/改名/删除、Base64、哈希校验——无需 Shizuku</span></div>
+      <div class="cap"><b>安全</b><span>API Key 由 Android Keystore AES-256-GCM 加密；聊天记录仅存本地，无后端、无遥测；破坏性操作二次确认，支持一键回滚</span></div>
+    </div>
+  </section>
+
+  <section id="spec">
+    <div class="rise"><div class="kicker">Build &amp; Verify</div><h2>构建信息</h2></div>
+    <div class="spec rise" style="--d:.06s">
+      <table>
+        <tr><td>包名</td><td><code>com.liquidbox.app</code></td></tr>
+        <tr><td>版本</td><td><code>1.0beta</code></td></tr>
+        <tr><td>签名</td><td>APK Signature Scheme v2（debug 签名）</td></tr>
+        <tr><td>系统要求</td><td>Android 8.0+（minSdk 26）· targetSdk 36 · compileSdk 37 · 边缘折射需 Android 13+</td></tr>
+        <tr><td>工具链</td><td>AGP 9.3.2 · Kotlin 2.4.10 · Compose 1.12.0 · Gradle 9.7.1 · JDK 17</td></tr>
+        <tr><td>核心依赖</td><td>backdrop 2.0.1 · shapes 1.2.1 · Shizuku API 13.1.5 · OkHttp 4.12.0</td></tr>
+        <tr><td>SHA-256</td><td class="sha">6e7feef5d3b43ab2dc3006c21d91f46d23e693b20e0f89b1e55b5b1585abf432</td></tr>
+        <tr><td>源码包</td><td><code>LiquidBox-source.zip</code> · 标准 ZIP，点击下载自动保存，解压即用，无需改名</td></tr>
+      </table>
+    </div>
+    <div class="notice">
+      <div class="note"><h3>安装前提</h3><ul>
+        <li>先安装并启动 <b>Shizuku</b>（或 Sui），通过无线调试 / ADB 激活并授权</li>
+        <li>AI 功能需在 App 设置页自行填写 Provider、Base URL 与 API Key</li>
+        <li>部分能力依赖 ROM：<code>iptables</code> 防火墙需 root，<code>pm hide</code> 等可能被限制</li>
+      </ul></div>
+      <div class="note warn"><h3>关于折射的硬性前提</h3><ul>
+        <li>库源码 <code>isRuntimeShaderSupported()</code> 判定为 <code>SDK_INT &gt;= 33</code>，<code>lens()</code> 不支持时直接返回</li>
+        <li>因此 <b>Android 13+ 才有边缘折射</b>；Android 12 只有模糊与高光，Android 11 及以下连 RenderEffect 都不可用</li>
+        <li>这是 Backdrop 库自身限制，原样使用官方组件也无法绕过</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <footer>
+    <span><b>LiquidBox 1.0beta</b> · 2026.11.14 首发</span><span class="sp"></span>
+    <span>玻璃组件 Kyant0 / AndroidLiquidGlass · 特权能力 RikkaApps Shizuku</span>
+  </footer>
+</main>
+
+<script>
+/* 液态玻璃按钮：按每个按钮尺寸实时生成圆角位移贴图，用 feDisplacementMap 折射背面画面；
+   backdrop-filter 每帧采样背面并模糊，不是预先做好的贴图。交互为官方 LiquidButton 的
+   按压放大 + 拖动偏移/拉伸 + 临界阻尼弹簧。不支持 SVG 滤镜的浏览器保留实时模糊。 */
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canSvgFilter = !!(window.CSS && CSS.supports &&
+    (CSS.supports('backdrop-filter', 'url(#lg-probe)') ||
+     CSS.supports('-webkit-backdrop-filter', 'url(#lg-probe)')));
+  var NS = 'http://www.w3.org/2000/svg';
+
+  function lensMap(w, h, r, edge) {
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    var g = c.getContext('2d'), img = g.createImageData(w, h), d = img.data;
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      var px = x + .5 - w / 2, py = y + .5 - h / 2;
+      var qx = Math.abs(px) - (w / 2 - r), qy = Math.abs(py) - (h / 2 - r);
+      var mx = Math.max(qx, 0), my = Math.max(qy, 0), len = Math.sqrt(mx * mx + my * my);
+      var dist = r - len - Math.min(Math.max(qx, qy), 0);
+      var nx, ny;
+      if (len > 0) { nx = mx / len; ny = my / len; }
+      else if (qx > qy) { nx = 1; ny = 0; } else { nx = 0; ny = 1; }
+      nx *= px < 0 ? -1 : 1; ny *= py < 0 ? -1 : 1;
+      var m = 0;
+      if (dist > 0 && dist < edge) { var t = 1 - dist / edge; m = 1 - Math.sqrt(1 - t * t); }
+      var k = (y * w + x) * 4;
+      d[k] = 128 - nx * m * 127; d[k + 1] = 128 - ny * m * 127; d[k + 2] = 128; d[k + 3] = 255;
+    }
+    g.putImageData(img, 0, 0);
+    return c.toDataURL();
+  }
+
+  function defs() {
+    var svg = document.getElementById('lg-btn-defs');
+    if (!svg) {
+      svg = document.createElementNS(NS, 'svg');
+      svg.id = 'lg-btn-defs';
+      svg.setAttribute('width', '0'); svg.setAttribute('height', '0');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.style.cssText = 'position:absolute;width:0;height:0;pointer-events:none';
+      document.body.appendChild(svg);
+    }
+    return svg;
+  }
+
+  function setRefraction(id, w, h, r, edge, amount) {
+    var svg = defs(), old = document.getElementById(id);
+    if (old) old.remove();
+    w = Math.round(w); h = Math.round(h);
+    var url = lensMap(w, h, Math.min(r, w / 2, h / 2), edge);
+    svg.insertAdjacentHTML('beforeend',
+      '<filter id="' + id + '" x="0" y="0" width="' + w + '" height="' + h + '" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">' +
+      '<feImage href="' + url + '" x="0" y="0" width="' + w + '" height="' + h + '" preserveAspectRatio="none" result="map"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="map" scale="' + (amount * 2).toFixed(2) + '" xChannelSelector="R" yChannelSelector="G"/></filter>');
+  }
+
+  var W = Math.sqrt(1000), K = 4 / 48;
+  function critical(x, v, t, dt) {
+    var o = x - t, e = Math.exp(-W * dt);
+    return [t + (o * e + (v + W * o) * dt * e), -W * o * e + (v + W * o) * (e - W * dt * e)];
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.btn'), function (el, idx) {
+    var glass = el.querySelector('.glass');
+    var id = 'lg-btn-' + idx;
+    function build() {
+      if (!el.offsetWidth || !canSvgFilter) return;
+      setRefraction(id, el.offsetWidth, el.offsetHeight, el.offsetHeight / 2, 12, 24);
+      var f = 'url(#' + id + ') blur(2px) saturate(1.5)';
+      glass.style.webkitBackdropFilter = f; glass.style.backdropFilter = f;
+    }
+    build();
+    if (window.ResizeObserver) new ResizeObserver(build).observe(el);
+
+    var p = 0, pv = 0, tp = 0, dx = 0, dy = 0, tdx = 0, tdy = 0, vx = 0, vy = 0;
+    var sx = 0, sy = 0, pid = null, raf = 0, last = 0;
+    function draw() {
+      var w = el.offsetWidth, h = el.offsetHeight, big = Math.max(w, h), small = Math.min(w, h);
+      var press = Math.max(0, p), s = 1 + K * press;
+      var ox = small * Math.tanh(.05 * dx / small), oy = small * Math.tanh(.05 * dy / small);
+      var ang = Math.atan2(dy, dx);
+      var scx = s + K * Math.abs(Math.cos(ang) * dx / big) * Math.min(w / h, 1);
+      var scy = s + K * Math.abs(Math.sin(ang) * dy / big) * Math.min(h / w, 1);
+      el.style.transform = 'translate3d(' + ox.toFixed(2) + 'px,' + oy.toFixed(2) + 'px,0) scale(' + scx.toFixed(4) + ',' + scy.toFixed(4) + ')';
+      el.style.setProperty('--press', Math.min(1, press).toFixed(3));
+    }
+    function frame(now) {
+      var dt = Math.min((now - last) / 1000, .05); last = now;
+      if (reduce) { p = tp; dx = tdx; dy = tdy; pv = vx = vy = 0; }
+      else {
+        var r = critical(p, pv, tp, dt); p = r[0]; pv = r[1];
+        r = critical(dx, vx, tdx, dt); dx = r[0]; vx = r[1];
+        r = critical(dy, vy, tdy, dt); dy = r[0]; vy = r[1];
+      }
+      draw();
+      var done = pid === null && Math.abs(p - tp) < .002 && Math.abs(pv) < .01 &&
+        Math.abs(dx) < .1 && Math.abs(dy) < .1 && Math.abs(vx) < .1 && Math.abs(vy) < .1;
+      if (done) { p = dx = dy = 0; draw(); raf = 0; } else raf = requestAnimationFrame(frame);
+    }
+    function kick() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+    function glow(e) {
+      var r = el.getBoundingClientRect();
+      glass.style.setProperty('--gx', (e.clientX - r.left) + 'px');
+      glass.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+    }
+    el.addEventListener('pointerdown', function (e) {
+      pid = e.pointerId; sx = e.clientX; sy = e.clientY;
+      tdx = tdy = 0; tp = 1; glow(e); kick();
+    });
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerId !== pid) return;
+      tdx = e.clientX - sx; tdy = e.clientY - sy; glow(e); kick();
+    });
+    function up(e) {
+      if (pid === null || (e && e.pointerId !== pid)) return;
+      pid = null; tp = 0; tdx = tdy = 0; kick();
+    }
+    document.addEventListener('pointerup', up);
+    document.addEventListener('pointercancel', up);
+    el.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { tp = 1; kick(); } });
+    el.addEventListener('keyup', function () { tp = 0; kick(); });
+    draw();
+  });
+})();
+</script>
+</body>
+</html>
